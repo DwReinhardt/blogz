@@ -2,7 +2,6 @@
 
 {% block content %}
 
-
     {% if posts|length == 0 %}
 
         <p>No Blogs yet</p>
@@ -10,9 +9,10 @@
     {% else %}
 
         <ul>
+            <h1>All Blog Entries</h1>
             {% for posts in posts %}
             <li>
-                {{posts.title}}
+                <h2>{{posts.title}}</h2>
                 <br>
                 {{posts.body}}
                 <hr />                

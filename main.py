@@ -1,5 +1,6 @@
 from flask import Flask, request, redirect, render_template, session
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -19,30 +20,38 @@ class Blog(db.Model):
     timestamp = db.Column(db.DateTime)
 
     def __init__(self, title, body, timestamp=None):
-        self.title = name
-        self.body = post
+        self.title = title
+        self.body = body
         if timestamp is None:
             timestamp = datetime.utcnow()
         self.timestamp = timestamp
   
 @app.route('/blog', methods=['POST'])
+def display_posts():
+    posts = Blog.query.all()
+    return render_template('blog.html', posts=posts)
 
 
 @app.route('/newpost', methods=['POST', 'GET'])
 def new_post():
-    
-    return render_template('blog.html')
-
-@app.route('/', methods=['POST', 'GET'])
-def index():
-
     if request.method == 'POST':
         post_title = request.form['title']
         post_body = request.form['body']
         new_post = Blog(post_title, post_body)
         db.session.add(new_post)
         db.session.commit()
+        return display_posts()
+    return render_template('newpost.html')
 
+@app.route('/blog_post')
+def get post(post_id):
+    request.args.get('id'):
+        blog_id = request.args.get('id')
+        blog = Blog.query.filter_by(id=blog_id)
+    return render_template('blog_post.html', blog=blog)
+
+@app.route('/', methods=['POST', 'GET'])
+def index():
     posts = Blog.query.all()
     return render_template('blog.html', posts=posts)
 
