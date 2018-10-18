@@ -12,7 +12,11 @@
             <h1>All Blog Entries</h1>
             {% for posts in posts %}
             <li>
-                <h2>{{posts.title}}</h2>
+                <h2>
+                    <a href="/blogpost?id={{ posts.id }}">
+                        {{posts.title}}
+                    </a>
+                </h2>
                 <br>
                 {{posts.body}}
                 <hr />                

@@ -4,12 +4,17 @@
     <h1>Create a New Blog Post</h1>
     <form action="" method="post">
         <label for="title">Title:</label>
-        <input id="title" name="title" type="text" required /><br><br>
+        <input id="title" name="title" type="text"  /><br>
+        <span class="error">{{title_error}}</span> 
+        <br><br>
 
         <label for="body">Body:</label>
-        <textarea name="body" required ></textarea><br><br><br>
+        <textarea name="body" ></textarea><br>
+        <span class="error">{{body_error}}</span> 
+        <br><br><br>
 
         <input type="submit" value='Add Post' />
+
     </form>
 
 {% endblock %}

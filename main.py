@@ -26,37 +26,57 @@ class Blog(db.Model):
             timestamp = datetime.utcnow()
         self.timestamp = timestamp
   
-@app.route('/blog', methods=['POST'])
+@app.route('/blog')
 def display_posts():
     posts = Blog.query.all()
     return render_template('blog.html', posts=posts)
 
+@app.route('/blogpost', methods=['GET'])
+def display_single_post():
+    retrieved_id = request.args.get('id')
+    posts = Blog.query.filter_by(id=retrieved_id).all()
+    return render_template('blog_post.html', posts=posts)
 
 @app.route('/newpost', methods=['POST', 'GET'])
 def new_post():
+
+    post_title = ''
+    post_body = ''
+    title_error = ''
+    body_error = ''
+    empty_field_error = "Field cannot be blank"
+
     if request.method == 'POST':
         post_title = request.form['title']
         post_body = request.form['body']
+
+    if not is_empty(post_title):                
+        title_error = empty_field_error
+    if not is_empty(post_body):                
+        body_error = empty_field_error
+
+    if not title_error and not body_error:
         new_post = Blog(post_title, post_body)
         db.session.add(new_post)
         db.session.commit()
-        return display_posts()
-    return render_template('newpost.html')
-
-@app.route('/blog_post')
-def get post(post_id):
-    request.args.get('id'):
-        blog_id = request.args.get('id')
-        blog = Blog.query.filter_by(id=blog_id)
-    return render_template('blog_post.html', blog=blog)
+        return redirect('/blogpost?id={0}'.format(new_post.id))
+        #return render_template('newpost.html', title_error=title_error, body_error=body_error, post_title=post_title, post_body=post_body)
+    else:
+        return render_template('newpost.html',
+            title_error = empty_field_error,
+            body_error = empty_field_error,
+            )
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
     posts = Blog.query.all()
     return render_template('blog.html', posts=posts)
 
-
-
+def is_empty(value):
+    if value:
+        return True
+    else:
+        return False
 
 if __name__ == '__main__':
     app.run()
