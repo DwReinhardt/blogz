@@ -8,13 +8,26 @@
 
 <body>
     <div class="navigation">
-            <a href="/">Home</a>
-            <a href="/newpost">Add a Blog Entry</a>
+        <a href='/'><b>Home</b></a>
+        <a href='/blog'><b>All Posts</b></a>
+        <a href='/newpost'><b>New Post</b></a>
+        <a href='/logout'>Log out</a>
+        <a href='/login'>Log in</a>
+
     </div>
 </br>
     <header>
-        Assginment for LC 101, Unit 2 - 'Build-a-blog'
+        Assginment for LC 101, Unit 2 - 'Blogz'
     </header>
+
+        {% with messages = get_flashed_messages(with_categories=True) %}
+        <ul>
+        {% for category,message in messages %}
+            <li class="{{category}}">{{message}}</li>
+        {% endfor %}
+        </ul>
+
+        {% endwith %}
 
     {% block content %}
     {% endblock %}

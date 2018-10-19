@@ -1,29 +1,13 @@
+
 {% extends "base.html" %}
 
 {% block content %}
-
-    {% if posts|length == 0 %}
-
-        <p>No Blogs yet</p>
-    
-    {% else %}
-
-        <ul>
-            <h1>All Blog Entries</h1>
-            {% for posts in posts %}
-            <li>
-                <h2>
-                    <a href="/blogpost?id={{ posts.id }}">
-                        {{posts.title}}
-                    </a>
-                </h2>
-                <br>
-                {{posts.body}}
-                <hr />                
-            </form>
-            </li>
-            {% endfor %}
-        </ul>
-
-    {% endif %}
+    <h1 align="center">Blogs</h1>
+            <ul>
+                {% for blog in blogs %}
+                    <a href="/blog?id={{blog.id}}"><h2>{{blog.title}}</h2></a>
+                    <li>{{blog.body}}</li>
+                    <li>written by:<a href="/blog?user_id={{blog.owner.id}}">{{blog.owner.username}}</a></li>
+                {% endfor %}
+            </ul>
 {% endblock %}
