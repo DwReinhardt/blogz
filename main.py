@@ -8,7 +8,7 @@ app.config['DEBUG'] = True
 
 # Note: the connection string after :// contains the following info:
 # user:password@server:portNumber/databaseName
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://build-a-blog:launchcode101@localhost:8889/build-a-blog'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://blogz:launchcode101@localhost:8889/build-a-blog'
 app.config['SQLALCHEMY_ECHO'] = True
 
 db = SQLAlchemy(app)
@@ -26,6 +26,71 @@ class Blog(db.Model):
             timestamp = datetime.utcnow()
         self.timestamp = timestamp
   
+class User():
+
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(120), unique=True)
+    password = db.Column(db.String(120))
+    tasks = db.relationship('Blog', backref='owner')
+
+    def __init__(self, email, password):
+        self.email = email
+        self.password = password
+
+@app.before_request
+def require_login():
+    allowed_routes = ['login', 'register']
+    if request.endpoint not in allowed_routes and 'email' not in session:
+        return redirect('/login')
+
+@app.route('/signup', methods=['POST', 'GET'])
+def signup():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        verify = request.form['verify']
+
+        # TODO - validate user's data
+
+        existing_user = User.query.filter_by(email=email).first()
+        if not existing_user:
+            new_user = User(email, password)
+            db.session.add(new_user)
+            db.session.commit()
+            session['email'] = email
+            return redirect('/')
+        else:
+            # TODO - user better response messaging
+            return "<h1>Duplicate user</h1>"
+
+    return render_template('signup.html')
+
+@app.route('/login', methods=['POST', 'GET'])
+def login():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        user = User.query.filter_by(email=email).first()
+        if user and user.password == password:
+            session['email'] = email
+            flash("Logged in")
+            return redirect('/newpost')
+        else:
+            flash('User password incorrect, or user does not exist', 'error')
+
+    return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    del session['email']
+    return redirect('/')
+
+
+
+
+#@app.route('/index')
+#def index():
+
 @app.route('/blog')
 def display_posts():
     posts = Blog.query.all()
@@ -65,6 +130,7 @@ def new_post():
             title_error = empty_field_error,
             body_error = empty_field_error,
             )
+
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
