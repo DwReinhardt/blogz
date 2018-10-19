@@ -3,7 +3,7 @@
     <h1>Blog Posts</h1>
     <ul>
         {% for blog in blogs %}
-            <a href="/blog?id={{blog.id}}"><h2>{{blog.title}}</h2></a>
+            <a href="/blog?blog_id={{blog.id}}"><h2>{{blog.title}}</h2></a>
             <li>written by:<a href="/blog?user_id={{blog.owner.id}}">{{blog.owner.username}}</a></li>
         {% endfor %}
     </ul>

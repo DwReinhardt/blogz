@@ -110,7 +110,7 @@ def logout():
 @app.route('/blog')
 def display_posts():
     user_id = request.args.get('user_id')
-    blog_id = request.args.get('id')
+    blog_id = request.args.get('blog_id')
     blog = Blog.query.all()
 
     if blog_id:
@@ -143,11 +143,12 @@ def new_post():
     body_error = ''
     empty_field_error = "Field cannot be blank"
 
+    owner = User.query.filter_by(username=session['username']).first()
+
     if request.method == 'POST':
         post_title = request.form['title']
         post_body = request.form['body']
-        username = session['username']
-        owner = User.query.filter_by(username=username).first()
+        #owner = User.query.filter_by(username=session['username']).first()
 
     if not is_empty(post_title):                
         title_error = empty_field_error
@@ -157,8 +158,8 @@ def new_post():
     if not title_error and not body_error:
         new_post = Blog(post_title, post_body, owner)
         db.session.add(new_post)
-        db.session.commit()
-        return redirect('/blogpost?id=' + str(new_post.id))
+        db.session.commit() 
+        return redirect('/blog=id' + str(new_post.id))
     else:
         return render_template('newpost.html',
             title_error = empty_field_error,
