@@ -3,11 +3,11 @@
 
 {% block content %}
 
-{% for post in posts %}
+
   <h1>User's Blog Entries</h1>
-  <h2>{{post.title}}</h2>
-  <p>{{blog.new_post}}</p>
-  <li>Author:<a href="/blog?user_id={{post.owner.id}}">{{post.owner.username}}</a></li>
-{% endfor %}
+  <h2>{{blogs.title}}</h2>
+  <p>{{blogs.body}}</p>
+  <li>Author:<a href="/blog?user_id={{blogs.owner.id}}">{{blogs.owner.username}}</a></li>
+
 
 {% endblock %}

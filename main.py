@@ -104,8 +104,12 @@ def login():
 
 @app.route('/logout')
 def logout():
-    del session['username']
-    return redirect('/blog')
+    # handle if there is nobody logged in?
+    if not is_empty(session):
+        return redirect('/login')
+    else:
+        del session['username']
+        return redirect('/blog')
 
 @app.route('/blog')
 def display_posts():
@@ -114,8 +118,8 @@ def display_posts():
     blog = Blog.query.all()
 
     if blog_id:
-        blog = Blog.query.get(blog_id)
-        return render_template('blog_post.html', blog=blog)
+        blogs = Blog.query.get(blog_id)
+        return render_template('blog_post.html', blogs=blogs)
     
     elif user_id:
         user = User.query.get(user_id)
@@ -129,11 +133,14 @@ def display_posts():
 @app.route('/blogpost', methods=['GET'])
 def display_single_post():
     retrieved_id = session['username']
-    posts = Blog.query.filter_by(id=retrieved_id).all()
-    return render_template('blog_post.html', posts=posts)
+    blogs = Blog.query.filter_by(id=retrieved_id).first()
+    return render_template('blog_post.html', blogs=blogs)
 
 @app.route('/newpost', methods=['POST', 'GET'])
 def new_post():
+    if not is_empty(session):
+        return redirect('/login')
+
     if request.method == 'GET':
         return render_template('newpost.html')
 
@@ -159,7 +166,7 @@ def new_post():
         new_post = Blog(post_title, post_body, owner)
         db.session.add(new_post)
         db.session.commit() 
-        return redirect('/blog=id' + str(new_post.id))
+        return redirect('/blog?blog_id=' + str(new_post.id))
     else:
         return render_template('newpost.html',
             title_error = empty_field_error,
