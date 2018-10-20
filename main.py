@@ -45,13 +45,12 @@ def is_empty(value):
         return True
     else:
         return False
-''' UNMASK THIS BEFORE PRDUCTION!!!!
 @app.before_request
 def require_login():
     allowed_routes = ['login', 'signup', 'display_posts', 'index']
     if request.endpoint not in allowed_routes and 'username' not in session:
         return redirect('/login')
-'''
+
 @app.route('/signup', methods=['POST', 'GET'])
 def signup():
     if request.method == 'POST':
